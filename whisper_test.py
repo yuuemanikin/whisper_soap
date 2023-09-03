@@ -1,6 +1,10 @@
 import whisper
 import json
 import deepl
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+from python_settings import settings
 
 model = whisper.load_model("small")
 voice_data_path = "/Users/tomoshigki/Desktop/whisper_test/whisper_test_env/小ファイル診察.m4a"
@@ -8,9 +12,14 @@ voice_data_path = "/Users/tomoshigki/Desktop/whisper_test/whisper_test_env/小�
 result = model.transcribe(voice_data_path, fp16=False)
 print(result["text"])
 
+# API Keyを環境変数から読み込む
+load_dotenv('/Users/tomoshigki/Desktop/whisper_test/whisper_test_env/api_key.env')
+deepl_key = os.environ.get("DEEPL_API_KEY") # 環境変数の値を代入
+openai_key = os.environ.get("OPENAI_API_KEY") # 環境変数の値を代入
+
 # 以下はChapgptに投げる際に一旦英語へ翻訳して、再度日本語に戻すためのコード
 
-API_KEY = '15a9d107-79ae-3b49-ef89-f4d20cd8b21d:fx' # 自身の API キーを指定
+API_KEY = os.environ.get('DEEPL_API_KEY') # 自身の API キーを指定
 
 
 # まずは日本語を英語へ
@@ -31,9 +40,8 @@ print(result_text)
 # chatgpt APIを呼んでSOAPへ分類する
 import openai
 
-open_ai_api_key = "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"
 
-openai.api_key = open_ai_api_key
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 # OpenAI ChatCompletionの呼び出し
 # プロンプトを変数化しておく
